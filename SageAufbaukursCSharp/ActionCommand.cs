@@ -9,7 +9,6 @@ namespace SageAufbaukursCSharp
 {
     public class ActionCommand : ICommand
     {
-        // asdf1234
         #region ICommand
         public event EventHandler CanExecuteChanged
         {
