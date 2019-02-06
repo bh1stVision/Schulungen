@@ -31,6 +31,36 @@ namespace SageAufbaukursCSharp.ServiceImplementations
 
                 return true;
             }
+            catch (PathTooLongException pte)
+            {
+                int pathLength = _path.Length;
+                int charactersToCut = (260 - pathLength) * -1;
+
+                string filename = Path.GetFileName(_path);
+                int fileExtensionLength = filename.Length - (filename.LastIndexOf('.') + 1);
+                string filenameWithoutFileExtension = filename.Substring(0, filename.Length - fileExtensionLength);
+                string fileExtension = filename.Substring(filename.LastIndexOf('.'));
+                string pathWithoutFilename = Path.GetDirectoryName(_path);
+
+                if (filenameWithoutFileExtension.Length > charactersToCut)
+                {
+                    string cutFilename = filenameWithoutFileExtension.Substring(0, filenameWithoutFileExtension.Length - charactersToCut);
+                    string newpath = Path.Combine(pathWithoutFilename, cutFilename, fileExtension);
+
+                    var sw = new StreamWriter(newpath);
+                    sw.Write("hello");
+                    sw.Dispose();
+
+                    Message = "Dateiname wurde gekürzt!";
+                }
+                else
+                {
+                    Fault = pte;
+                    Message = pte.Message;
+                }
+
+                return false;
+            }
             catch (UnauthorizedAccessException uae)
             {
                 Message = uae.Message;
@@ -85,7 +115,7 @@ namespace SageAufbaukursCSharp.ServiceImplementations
         #endregion services
 
         #region constructors
-        public SaveFileUtil(IProblemSolver problemSolver)
+        public SaveFileUtil(IProblemSolver problemSolver, string fallbackPath, string path)
         {
             //Constructor Injection
             _problemSolver = problemSolver;
@@ -93,7 +123,8 @@ namespace SageAufbaukursCSharp.ServiceImplementations
         #endregion constructors
 
         #region private
-        private string _fallbackPath = Environment.GetEnvironmentVariable("TEMP");
+        private string _path;
+        private string _fallbackPath; // = Environment.GetEnvironmentVariable("TEMP");
         #endregion private
     }
 }
