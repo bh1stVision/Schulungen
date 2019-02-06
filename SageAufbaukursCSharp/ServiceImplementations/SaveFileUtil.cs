@@ -62,7 +62,7 @@ namespace SageAufbaukursCSharp.ServiceImplementations
                     {
                         sw.Write("hello");
                     }
-                    _problemSolver.GetProblem(path);
+                    _problemSolver.SetProblem(path);
                     Message = "Fallback wurde genutzt";
                     return false;
                 }
@@ -80,6 +80,10 @@ namespace SageAufbaukursCSharp.ServiceImplementations
         }
         #endregion ISaveFileUtil
 
+        #region services
+        private readonly IProblemSolver _problemSolver;
+        #endregion services
+
         #region constructors
         public SaveFileUtil(IProblemSolver problemSolver)
         {
@@ -90,11 +94,6 @@ namespace SageAufbaukursCSharp.ServiceImplementations
 
         #region private
         private string _fallbackPath = Environment.GetEnvironmentVariable("TEMP");
-        private IProblemSolver _problemSolver;
         #endregion private
-
-
-
-
     }
 }

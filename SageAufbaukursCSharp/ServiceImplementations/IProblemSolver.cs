@@ -8,7 +8,7 @@ namespace SageAufbaukursCSharp.ServiceImplementations
 {
     public interface IProblemSolver
     {
-        void GetProblem(string path);
+        void SetProblem(string path);
 
 
     }
